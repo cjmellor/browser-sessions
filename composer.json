@@ -1,0 +1,5 @@
+{
+  "require": {
+    "laravel/prompts": "^0.1.6"
+  }
+}

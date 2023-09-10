@@ -1,0 +1,582 @@
+#!/usr/bin/env php
+<?php
+
+use function Laravel\Prompts\{confirm, info, note, warning};
+use function Laravel\Prompts\{multiselect, select, suggest, text};
+
+require_once __DIR__.'/vendor/autoload.php';
+
+/*
+ |--------------------------------------------------------------------------
+ | Helper functions
+ |--------------------------------------------------------------------------
+ |
+ | Functions used to help keep things DRY.
+ |
+*/
+function run($command): string
+{
+    return trim(string: (string) shell_exec(command: $command));
+}
+
+function slugify(string $text): string
+{
+    $text = str_replace(search: ' ', replace: '-', subject: $text);
+    $text = preg_replace(pattern: '/[^A-Za-z0-9\-]/', replacement: '', subject: $text);
+    $text = preg_replace(pattern: '/-+/', replacement: '-', subject: $text);
+    $text = trim($text, characters: '-');
+
+    return strtolower($text);
+}
+
+function camelCase(string $string): string
+{
+    return preg_replace_callback(pattern: '/[-_](.)/', callback: function ($matches) {
+        return strtoupper($matches[1]);
+    }, subject: $string);
+}
+
+function kebabCase(string $string): string
+{
+    return strtolower(preg_replace(pattern: '/([a-zA-Z])(?=[A-Z])/', replacement: '$1-', subject: $string));
+}
+
+function replaceInFile($search, $replace, $filename): void
+{
+    file_put_contents(
+        $filename,
+        str_replace($search, $replace, file_get_contents($filename))
+    );
+}
+
+function addComposerData(array $data, string $filePath = 'composer.json'): bool
+{
+    // Check if the file exists and is readable
+    if (! is_readable($filePath) || ! is_writable($filePath)) {
+        return false;
+    }
+
+    file_put_contents(filename: $filePath, data: '{}');
+
+    // Read and decode the existing composer.json file
+    $composerData = json_decode(json: file_get_contents($filePath), associative: true);
+
+    if ($composerData === null && json_last_error() !== JSON_ERROR_NONE) {
+        return false; // Invalid JSON
+    }
+
+    // Merge the new data
+    $composerData = array_merge_recursive($composerData, $data);
+
+    // Write the updated data back to composer.json
+    $result = file_put_contents(
+        filename: $filePath,
+        data: json_encode($composerData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+    );
+
+    return ($result !== false);
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Prompt the user for package details
+ | --------------------------------------------------------------------------
+ |
+ | Prompts the user for the package details needed before scaffolding begins.
+ |
+*/
+
+/**
+ * Prompt the user to enter the name of the package maintainer
+ * Suggests: it gets the name from git config
+ */
+$packageAuthorName = suggest(
+    label: 'What is the package author\'s name?',
+    options: fn () => [run(command: 'git config user.name')],
+    required: true,
+);
+
+/**
+ * Prompt the user to enter the email of the package maintainer
+ * Suggests: it gets the email from git config
+ * Validation: it must be a valid email address
+ */
+$email = suggest(
+    label: 'What is the package author\'s email?',
+    options: fn () => [run(command: 'git config user.email')],
+    required: true,
+    validate: fn ($email) => match (true) {
+        ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email must be a valid email address',
+        default => null,
+    },
+);
+
+/**
+ * Prompt the user to enter the name of the package author
+ */
+$username = text(
+    label: 'What is your VCS username?',
+    required: true,
+    hint: 'This will be your VCS provider username.',
+);
+$username = slugify($username);
+
+/**
+ * Prompt the user to enter the vendor namespace of the package
+ * Suggests: the vendor name
+ * Validation: it must be alphanumeric
+ */
+$vendorName = suggest(
+    label: 'What namespace should the package use?',
+    options: fn () => [str_replace(search: '-', replace: '', subject: ucwords($username))],
+    placeholder: 'Consider: '.ucwords($username),
+    required: true,
+    validate: fn ($vendor) => match (true) {
+        ! preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $vendor) => 'Vendor namespace must be alphanumeric',
+        ! preg_match(pattern: '/^[A-Z]/i', subject: $vendor) => 'Vendor namespace must be capitalized',
+        default => null,
+    },
+);
+$vendorName = ucwords($vendorName);
+$vendorNameSlug = slugify($vendorName);
+
+/**
+ * Prompt the user to enter the name of the package
+ * Validation: it must be alphanumeric
+ */
+$packageName = suggest(
+    label: 'What name would you like to give your package?',
+    options: [basename(getcwd())],
+    required: true,
+    validate: fn ($value) => match (true) {
+        ! preg_match(pattern: '/^[A-Za-z0-9\-\s]+$/i', subject: $value) => 'Package name must be alphanumeric',
+        default => null,
+    },
+);
+$packageName = slugify($packageName);
+
+/**
+ * Prompt the user to enter the package description
+ */
+$packageDescription = text(
+    label: 'Describe what your package tries to accomplish',
+    required: true,
+);
+
+/**
+ * Prompt the user for the packages' Class name
+ * Suggests: the package name
+ * Validation: it must be alphanumeric
+ */
+$className = suggest(
+    label: 'Choose a class name for your package',
+    options: fn () => [str_replace(search: ' ', replace: '', subject: ucwords(string: str_replace(['-', '_'], replace: ' ', subject: $packageName)))],
+    required: true,
+    validate: fn ($value) => match (true) {
+        ! preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $value) => 'Class name must be alphanumeric',
+        default => null,
+    },
+);
+$className = ucwords($className);
+
+/**
+ * Prompt for the minimum PHP version the package supports
+ */
+$phpVersion = select(
+    label: 'What is the minimum PHP version your package supports?',
+    options: [
+        '8.2',
+        '8.1',
+    ],
+    default: '8.2',
+);
+
+/**
+ * prompt for the Laravel version the package supports
+ */
+$laravelVersion = select(
+    label: 'What is the minimum Laravel version your package supports?',
+    options: [
+        '10',
+    ],
+    default: '10',
+);
+
+/**
+ * Prompt for which testing framework to use
+ */
+$testingFramework = select(
+    label: 'Select a Testing Framework',
+    options: [
+        'Pest',
+        'PHPUnit',
+    ],
+    default: 'Pest',
+);
+
+/**
+ * Prompt the user to enable some extra dependencies and actions
+ * - Dependabot
+ * - Update CHANGELOG
+ * - Pint
+ * - PHPStan
+ * - Rector
+ */
+$enabledFeatures = multiselect(
+    label: 'Which extra features do you want enabled?',
+    options: [
+        'Dependabot',
+        'Update CHANGELOG',
+        'Pint',
+        'PHPStan',
+        'Rector',
+    ],
+    default: [
+        'Dependabot',
+        'Update CHANGELOG',
+    ],
+);
+
+/**
+ * If PHPStan is selected as an extra feature, see if Larastan should be enabled too
+ */
+if (isset($enabledFeatures[3])) {
+    $enableLarastan = confirm(label: 'Do you want to enable Larastan?');
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Scaffold the package
+ |--------------------------------------------------------------------------
+ |
+ | Scaffold the package using the details provided by the user.
+ |
+*/
+
+// Add the source folders
+$directories = [
+    'config',
+    'database' => [
+        'factories',
+        'migrations',
+        'seeders',
+    ],
+    'resources' => [
+        'views',
+    ],
+    'routes',
+    'src' => [
+        'Facades',
+    ],
+    'tests',
+];
+
+// loop over $directories and create the folders
+foreach ($directories as $key => $value) {
+    if (is_array($value)) {
+        foreach ($value as $subDir) {
+            mkdir(directory: $key.'/'.$subDir, recursive: true);
+        }
+    } else {
+        mkdir(directory: $value, recursive: true);
+    }
+}
+
+// Add the config file
+touch(filename: "config/$packageName.php");
+file_put_contents(
+    filename: "config/$packageName.php",
+    data: "<?php\n\nreturn [\n\n];\n"
+);
+
+// Add the LICENCE file
+replaceInFile(
+    search: [':year', ':fullName'],
+    replace: [date('Y'), $packageAuthorName],
+    filename: 'LICENSE',
+);
+
+if (! is_dir($directory = '.github')) {
+    mkdir(directory: $directory);
+    mkdir(directory: $directory.'/workflows');
+    mkdir(directory: $directory.'/ISSUE_TEMPLATE');
+}
+
+// Does the User want to use Dependabot?
+if (in_array(needle: 'Dependabot', haystack: $enabledFeatures)) {
+    rename(from: 'stubs/dependabot.yml.stub', to: '.github/dependabot.yml');
+    rename(from: 'stubs/dependabot-auto-merge.yml.stub', to: '.github/workflows/dependabot-auto-merge.yml');
+}
+
+// Does the User want to use the "Update CHANGELOG" workflow?
+if (in_array(needle: 'Update CHANGELOG', haystack: $enabledFeatures)) {
+    rename(from: 'stubs/update-changelog.yml.stub', to: '.github/workflows/update-changelog.yml');
+}
+
+/**
+ * Add needed files for submitting issues to the repo.
+ */
+rename(from: 'stubs/bug_report.yml.stub', to: '.github/ISSUE_TEMPLATE/bug_report.yml');
+rename(from: 'stubs/config.yml.stub', to: '.github/ISSUE_TEMPLATE/config.yml');
+replaceInFile(
+    search: [':vendorName', ':packageName'],
+    replace: [$vendorNameSlug, $packageName],
+    filename: '.github/ISSUE_TEMPLATE/config.yml',
+);
+
+/**
+ * Add some meta data and main requirements.
+ */
+$composerDataStructure = [
+    'name' => "$vendorNameSlug/$packageName",
+    'description' => "$packageDescription",
+    'keywords' => [
+        'laravel',
+        "$packageName",
+    ],
+    "homepage" => "https://github.com/$vendorNameSlug/$packageName",
+    "license" => "MIT",
+    "authors" => [
+        [
+            "name" => "$packageAuthorName",
+            "email" => "$email",
+        ],
+    ],
+    "require" => [
+        "php" => "^$phpVersion",
+        "illuminate/contracts" => "^$laravelVersion.0",
+        "spatie/laravel-package-tools" => "^1.14",
+    ],
+    "require-dev" => [
+        "nunomaduro/collision" => "^7.0",
+    ],
+];
+
+/**
+ * Add the development requirements.
+ */
+
+// Add a testing framework. These are the defaults.
+$composerDataStructure['require-dev'] = array_merge(
+    $composerDataStructure['require-dev'],
+    [
+        "orchestra/testbench" => "^8.0",
+        "phpunit/phpunit" => "^10.0",
+    ]
+);
+
+// At this point, $packageName needs to be ucfirst
+$packageName = ucfirst(camelCase(string: $packageName));
+
+// Add the Facade
+touch(filename: "src/Facades/$className.php");
+file_put_contents(
+    filename: "src/Facades/$className.php",
+    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '$packageName';\n    }\n}\n"
+);
+
+// Add the Service Provider
+touch(filename: "src/{$className}ServiceProvider.php");
+file_put_contents(
+    filename: "src/{$className}ServiceProvider.php",
+    data: "<?php\n\nnamespace $vendorName\\$packageName;\nuse Spatie\LaravelPackageTools\Package;\n\nuse Spatie\LaravelPackageTools\PackageServiceProvider;\n\nclass {$className}ServiceProvider extends PackageServiceProvider\n{\n    public function configurePackage(Package \$package): void\n    {\n        // \$package->name('my-package');\n    }\n}\n"
+);
+
+rename(from: 'stubs/Arch.php.stub', to: 'tests/Arch.php');
+rename(from: 'stubs/TestCase.php.stub', to: 'tests/TestCase.php');
+
+replaceInFile(
+    search: [':vendorName', ':packageName'],
+    replace: [$vendorName, $packageName],
+    filename: 'tests/TestCase.php',
+);
+
+if ($testingFramework === 'PHPUnit') {
+    rename(from: 'stubs/run-tests.yml.stub', to: '.github/workflows/run-tests.yml');
+
+    replaceInFile(
+        search: [':phpVersion', ':laravelVersion'],
+        replace: [$phpVersion, $laravelVersion],
+        filename: '.github/workflows/run-tests.yml',
+    );
+}
+
+// Does the User want to use Pest?
+if ($testingFramework === 'Pest') {
+    $composerDataStructure['require-dev'] = array_merge(
+        $composerDataStructure['require-dev'],
+        [
+            "pestphp/pest" => "^2.0",
+            "pestphp/pest-plugin-arch" => "^2.0",
+            "pestphp/pest-plugin-laravel" => "^2.0",
+        ]
+    );
+
+    touch(filename: 'tests/Pest.php');
+    file_put_contents(
+        filename: 'tests/Pest.php',
+        data: "<?php\n\nuse $vendorName\\$packageName\\Tests\TestCase;\n\nuses(TestCase::class)->in(__DIR__);\n"
+    );
+
+    rename(from: 'stubs/run-pest.yml.stub', to: '.github/workflows/run-pest.yml');
+    replaceInFile(
+        search: [':phpVersion', ':laravelVersion'],
+        replace: [$phpVersion, $laravelVersion],
+        filename: '.github/workflows/run-pest.yml',
+    );
+}
+
+// Does the User want to use Pint?
+if (in_array(needle: 'Pint', haystack: $enabledFeatures)) {
+    $composerDataStructure['require-dev'] = array_merge(
+        $composerDataStructure['require-dev'],
+        [
+            "laravel/pint" => "^1.0",
+        ]
+    );
+
+    rename(from: 'stubs/run-linter.yml.stub', to: '.github/workflows/run-linter.yml');
+}
+
+// Does the User want to use PHPStan and Larastan?
+if (in_array(needle: 'PHPStan', haystack: $enabledFeatures)) {
+    $composerDataStructure['require-dev'] = array_merge(
+        $composerDataStructure['require-dev'],
+        [
+            "phpstan/phpstan" => "^1.0",
+        ]
+    );
+
+    if (isset($enableLarastan)) {
+        $composerDataStructure['require-dev'] = array_merge(
+            $composerDataStructure['require-dev'],
+            [
+                "nunomaduro/larastan" => "^2.0",
+            ]
+        );
+    }
+
+    rename(from: 'stubs/phpstan.neon.stub', to: 'phpstan.neon');
+    rename(from: 'stubs/static-analysis.yml.stub', to: '.github/workflows/static-analysis.yml');
+
+    file_put_contents(
+        filename: 'phpstan.neon',
+        data: "includes: - ./vendor/nunomaduro/larastan/extension.neon\n\n".file_get_contents(filename: 'phpstan.neon')
+    );
+
+    replaceInFile(
+        search: [':phpVersion'],
+        replace: [$phpVersion],
+        filename: '.github/workflows/static-analysis.yml',
+    );
+}
+
+// Does the User want to use Rector?
+if (in_array(needle: 'Rector', haystack: $enabledFeatures)) {
+    $composerDataStructure['require-dev'] = array_merge(
+        $composerDataStructure['require-dev'],
+        [
+            "driftingly/rector-laravel" => "^0.24",
+            "rectorphp/rector" => "^0.18",
+        ]
+    );
+
+    rename(from: 'stubs/rector.php.stub', to: 'rector.php');
+
+    replaceInFile(
+        search: ':laravelVersion',
+        replace: $laravelVersion,
+        filename: 'rector.php',
+    );
+}
+
+/**
+ * Add autoload/autoload-dev data
+ */
+$composerDataStructure['autoload'] = [
+    'psr-4' => [
+        "$vendorName\\$packageName\\" => 'src/',
+        "$vendorName\\$packageName\\Database\\Factories\\" => 'database/factories/',
+    ],
+];
+
+$composerDataStructure['autoload-dev'] = [
+    'psr-4' => [
+        "$vendorName\\$packageName\\Tests\\" => 'tests/',
+    ],
+];
+
+/**
+ * Add scripts
+ */
+$composerDataStructure['scripts'] = [
+    'analyze' => 'vendor/bin/phpstan analyse',
+    'lint' => 'vendor/bin/pint',
+    'format' => 'vendor/bin/rector process',
+    'post-autoload-dump' => '@php ./vendor/bin/testbench package:discover --ansi',
+    'test' => 'vendor/bin/phpunit',
+    'pest' => 'vendor/bin/pest',
+];
+
+/**
+ * Add config data
+ */
+$composerDataStructure['config'] = [
+    'allow-plugins' => [
+        'pestphp/pest-plugin' => true,
+    ],
+    'sort-packages' => true,
+];
+
+/**
+ * Add extra data
+ */
+$composerDataStructure['extra'] = [
+    'laravel' => [
+        'providers' => [
+            "$vendorName\\$packageName\\{$className}ServiceProvider::class",
+        ],
+        'aliases' => [
+            "$className" => "$vendorName\\$packageName\\Facades\\$className::class",
+        ],
+    ],
+    'minimum-stability' => 'stable',
+    'prefer-stable' => true,
+];
+
+addComposerData(data: $composerDataStructure);
+
+/**
+ * |--------------------------------------------------------------------------
+ * | Install the dependencies
+ * |--------------------------------------------------------------------------
+ * |
+ * | Everything is done; now it's time to install the dependencies.
+ * |
+ */
+$confirmInstall = confirm(label: 'Are you ready to install the dependencies?');
+
+if ($confirmInstall) {
+    note(message: 'Installing dependencies...');
+
+    run(command: 'composer update --quiet --no-interaction');
+
+    rename(from: 'stubs/README.md.stub', to: 'README.md');
+
+    replaceInFile(
+        search: [':username', ':packageName', ':laravelVersion', ':which-test'],
+        replace: [$username, kebabCase($packageName), $laravelVersion, $testingFramework === 'Pest' ? 'pest' : 'tests'],
+        filename: 'README.md',
+    );
+}
+
+info(message: 'Installation complete! You\'re all set to start building your package.');
+
+$deleteInstaller = confirm(label: 'Do you want to delete the installer?');
+
+if ($deleteInstaller) {
+    unlink(filename: 'build');
+
+    warning(message: 'The installer has been deleted');
+}
+
