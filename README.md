@@ -1,31 +1,5 @@
-# 💀 Package Skeleton CLI
-
-![Social Cover](https://github.com/cjmellor/skeleton/assets/1848476/733b39c1-c202-44be-96fa-fc1f3b70481b)
-
-The Package Skeleton CLI is a tool to generate a package skeleton to start building a Laravel package.
-
-## Installation
-
-Create a folder for your package and install the package skeleton CLI:
-
-```bash
-mkdir my-package
-
-cd my-package
-
-composer require cjmellor/skeleton
-```
-
-## Usage
-
-Run the following command to generate a package skeleton:
-
-```bash
-php build
-```
-
-You will be prompted with multiple questions in relation to your package. Once you have answered all the questions, the package skeleton will be generated.
-
-## License
-
-The Package Skeleton CLI is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/cjmellor/browser-sessions?color=rgb%2856%20189%20248%29&label=release&style=for-the-badge)](https://packagist.org/packages/cjmellor/browser-sessions)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/cjmellor/browser-sessions/run-pest.yml?branch=main&label=tests&style=for-the-badge&color=rgb%28134%20239%20128%29)](https://github.com/cjmellor/browser-sessions/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/cjmellor/browser-sessions.svg?color=rgb%28249%20115%2022%29&style=for-the-badge)](https://packagist.org/packages/cjmellor/browser-sessions)
+![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/cjmellor/browser-sessions/php?color=rgb%28165%20180%20252%29&logo=php&logoColor=rgb%28165%20180%20252%29&style=for-the-badge)
+![Laravel Version](https://img.shields.io/badge/laravel-^10-rgb(235%2068%2050)?style=for-the-badge&logo=laravel)

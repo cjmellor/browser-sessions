@@ -1,5 +1,68 @@
 {
-  "require": {
-    "laravel/prompts": "^0.1.6"
-  }
+    "name": "cjmellor/browser-sessions",
+    "description": "A Laravel package to enable users to manage and monitor their active browser sessions. Allows users to view devices where they are logged in and provides options to terminate unrecognized or all sessions, enhancing account security",
+    "keywords": [
+        "laravel",
+        "browser-sessions"
+    ],
+    "homepage": "https://github.com/cjmellor/browser-sessions",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Mellor",
+            "email": "cmellor@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^10.0",
+        "jenssegers/agent": "^2.6",
+        "spatie/laravel-package-tools": "^1.14"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^7.0",
+        "orchestra/testbench": "^8.0",
+        "phpunit/phpunit": "^10.0",
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "laravel/pint": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cjmellor\\BrowserSessions\\": "src/",
+            "Cjmellor\\BrowserSessions\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cjmellor\\BrowserSessions\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyze": "vendor/bin/phpstan analyse",
+        "lint": "vendor/bin/pint",
+        "format": "vendor/bin/rector process",
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "test": "vendor/bin/phpunit",
+        "pest": "vendor/bin/pest"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cjmellor\\BrowserSessions\\BrowserSessionsServiceProvider::class"
+            ],
+            "aliases": {
+                "BrowserSessions": "Cjmellor\\BrowserSessions\\Facades\\BrowserSessions::class"
+            }
+        },
+        "minimum-stability": "stable",
+        "prefer-stable": true
+    }
 }

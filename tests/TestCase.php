@@ -1,10 +1,10 @@
 <?php
 
-namespace :vendorName\:packageName\Tests;
+namespace Cjmellor\BrowserSessions\Tests;
 
+use Cjmellor\BrowserSessions\BrowserSessionsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use :vendorName\:packageName\:packageNameServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,14 +13,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => ':vendorName\\:packageName\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Cjmellor\\BrowserSessions\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            :packageNameServiceProvider::class,
+            BrowserSessionsServiceProvider::class,
         ];
     }
 
