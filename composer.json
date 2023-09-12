@@ -1,6 +1,6 @@
 {
     "name": "cjmellor/browser-sessions",
-    "description": "A Laravel package to enable users to manage and monitor their active browser sessions. Allows users to view devices where they are logged in and provides options to terminate unrecognized or all sessions, enhancing account security",
+    "description": "Stuff",
     "keywords": [
         "laravel",
         "browser-sessions"
@@ -56,10 +56,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cjmellor\\BrowserSessions\\BrowserSessionsServiceProvider::class"
+                "Cjmellor\\BrowserSessions\\BrowserSessionsServiceProvider"
             ],
             "aliases": {
-                "BrowserSessions": "Cjmellor\\BrowserSessions\\Facades\\BrowserSessions::class"
+                "BrowserSessions": "Cjmellor\\BrowserSessions\\Facades\\BrowserSessions"
             }
         },
         "minimum-stability": "stable",
