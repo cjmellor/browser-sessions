@@ -31,6 +31,7 @@ class BrowserSessions
                     'browser' => $agent->browser(),
                     'desktop' => $agent->isDesktop(),
                     'mobile' => $agent->isMobile(),
+                    'tablet' => $agent->isTablet(),
                     'platform' => $agent->platform(),
                 ],
                 'ip_address' => $session->ip_address,
@@ -73,5 +74,17 @@ class BrowserSessions
             ->where(column: 'user_id', operator: '=', value: Auth::user()->getAuthIdentifier())
             ->where(column: 'id', operator: '!=', value: request()->session()->getId())
             ->delete();
+    }
+
+    public function getUserLastActivity(bool $human = false): Carbon|string
+    {
+        $lastActivity = DB::connection(config(key: 'session.connection'))->table(table: config(key: 'session.table', default: 'sessions'))
+            ->where(column: 'user_id', operator: '=', value: Auth::user()->getAuthIdentifier())
+            ->latest(column: 'last_activity')
+            ->first();
+
+        return $human
+            ? Carbon::createFromTimestamp($lastActivity->last_activity)->diffForHumans()
+            : Carbon::createFromTimestamp($lastActivity->last_activity);
     }
 }
