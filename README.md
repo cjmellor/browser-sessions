@@ -88,6 +88,20 @@ Then in your view, you can add a form to submit a `DELETE` request to the above 
 </form>
 ```
 
+## Retrieve the Users' Last Activity
+
+Get the users' last activity by using the `getUserLastActivity` method:
+
+```php
+BrowserSessions::getUserLastActivity();
+```
+
+You can also view the date in a human-readable format:
+
+```php
+BrowserSessions::getUserLastActivity(human: true);
+```
+
 ## Credits
 
  - [Chris Mellor](https://github.com/cjmellor)
