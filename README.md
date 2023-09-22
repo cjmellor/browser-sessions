@@ -3,6 +3,10 @@
 ![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/cjmellor/browser-sessions/php?color=rgb%28165%20180%20252%29&logo=php&logoColor=rgb%28165%20180%20252%29&style=for-the-badge)
 ![Laravel Version](https://img.shields.io/badge/laravel-^10-rgb(235%2068%2050)?style=for-the-badge&logo=laravel)
 
+> **Warning**
+>
+> This package can only be used with the `database` driver for the Sessions. This is how it is done in Jetstream, so keep this in mind as it may turn you off knowing you need to manage sessions in the database.
+
 # Logout Other Browser Sessions
 
 This package allows you to log out sessions that are active on other devices.
@@ -15,7 +19,7 @@ You may find this useful if you have logged in on a different device, or you hav
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via Composer:
 
 ```bash
 composer require cjmellor/browser-sessions
@@ -84,7 +88,7 @@ Then in your view, you can add a form to submit a `DELETE` request to the above 
     
     <x-text-input label="Password" name="password" placeholder="Enter password" type="password" />
     
-    <button class="btn btn-primary" type="submit">Logout Other Sessions</button>
+    <button type="submit">Logout Other Sessions</button>
 </form>
 ```
 
