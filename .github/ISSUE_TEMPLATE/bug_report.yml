@@ -25,23 +25,21 @@ body:
       placeholder: 1.2.3
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: php-version
     attributes:
       label: PHP Version
       description: What version of PHP are you running?
-      multiple: true
       options:
         - 8.1
         - 8.2
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: laravel-version
     attributes:
       label: Laravel Version
       description: What version of Laravel are you using?
-      multiple: true
       options:
         - 9.x
         - 10.x
@@ -51,7 +49,6 @@ body:
     id: operating-systems
     attributes:
       label: Which operating systems does with happen with?
-      multiple: true
       options:
         - macOS
         - Windows
