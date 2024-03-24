@@ -7,8 +7,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ 8.2 ]
-        laravel: [ 10 ]
+        php: [ 8.2, 8.3 ]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: "PHP: v${{ matrix.php }} [${{ matrix.stability }}]"
