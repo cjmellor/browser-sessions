@@ -15,13 +15,13 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/contracts": "^10.0",
+        "illuminate/support": "^10.0|^11.0",
         "jenssegers/agent": "^2.6",
         "spatie/laravel-package-tools": "^1.14"
     },
     "require-dev": {
-        "nunomaduro/collision": "^7.0",
-        "orchestra/testbench": "^8.0",
+        "nunomaduro/collision": "^7.0|^8.0",
+        "orchestra/testbench": "^8.0|^9.0",
         "phpunit/phpunit": "^10.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-arch": "^2.0",
