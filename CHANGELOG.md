@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.1.0 - 2024-03-24
+
+### What's Changed
+
+* Bump stefanzweifel/git-auto-commit-action from 4 to 5 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/5
+* Bump aglipanci/laravel-pint-action from 2.3.0 to 2.3.1 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/8
+* Laravel 11.x Compatibility by @cjmellor in https://github.com/cjmellor/browser-sessions/pull/9
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.0.0...v1.1.0
+
 ## v1.0.0 - 2023-09-20
 
 ### What's Changed
