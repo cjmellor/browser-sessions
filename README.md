@@ -3,7 +3,7 @@
 ![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/cjmellor/browser-sessions/php?color=rgb%28165%20180%20252%29&logo=php&logoColor=rgb%28165%20180%20252%29&style=for-the-badge)
 ![Laravel Version](https://img.shields.io/badge/laravel-^10-rgb(235%2068%2050)?style=for-the-badge&logo=laravel)
 
-> **Warning**
+> [!WARNING]
 >
 > This package can only be used with the `database` driver for the Sessions. This is how it is done in Jetstream, so keep this in mind as it may turn you off knowing you need to manage sessions in the database.
 
@@ -13,7 +13,7 @@ This package allows you to log out sessions that are active on other devices.
 
 You may find this useful if you have logged in on a different device, or you have let someone else use your account, or you have forgotten to log out of a public computer. It can especially be useful if you see suspicious device activity on your account.
 
-> **Note**
+> [!NOTE]
 > 
 > This code has been extracted from [Laravel Jetstream](https://jetstream.laravel.com) and cannot be used outside a Laravel application.
 
@@ -61,7 +61,7 @@ Use the `BrowserSessions` facade to log out all the user's other browser session
 BrowserSessions::logoutOtherBrowserSessions();
 ```
 
-> **Note**
+> [!NOTE]
 > 
 > A `password` must be sent along to the method to confirm the user's identity. Only then will the sessions be removed. See below on how you would implement this.
 
