@@ -8,14 +8,16 @@ class BrowserSessionsServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__.'/../config/browser-sessions.php' => config_path('browser-sessions.php'),
+        ]);
     }
 
     public function register(): void
     {
         $this->app->singleton(
             abstract: 'browser-sessions',
-            concrete: fn () => new BrowserSessions()
+            concrete: fn () => new BrowserSessions
         );
     }
 }

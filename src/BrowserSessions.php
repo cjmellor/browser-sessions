@@ -26,7 +26,7 @@ class BrowserSessions
         )->map(callback: function ($session): object {
             $agent = $this->createAgent($session);
 
-            return (object) [
+            $sessionInfo = [
                 'device' => [
                     'browser' => $agent->browser(),
                     'desktop' => $agent->isDesktop(),
@@ -38,13 +38,19 @@ class BrowserSessions
                 'is_current_device' => $session->id === request()->session()->getId(),
                 'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
             ];
+
+            if (config('browser-sessions-enhanced.include_session_id')) {
+                $sessionInfo = array_merge(['session_id' => $session->id], $sessionInfo);
+            }
+
+            return (object) $sessionInfo;
         });
     }
 
     protected function createAgent(mixed $session)
     {
         return tap(
-            value: new Agent(),
+            value: new Agent,
             callback: fn ($agent) => $agent->setUserAgent(userAgent: $session->user_agent)
         );
     }
