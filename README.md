@@ -25,6 +25,21 @@ You can install the package via Composer:
 composer require cjmellor/browser-sessions
 ```
 
+## Publishing the Configuration
+
+To publish the configuration file for this package, run the following Artisan command:
+
+```bash
+php artisan vendor:publish --provider="Cjmellor\BrowserSessions\BrowserSessionsServiceProvider"
+```
+This will copy the `browser-sessions.php` configuration file to your application's config directory, allowing you to customize its settings.
+
+### Configurable Options
+
+You can customize the following options in the published `config/browser-sessions.php` file:
+
+`include_session_id: (default: false)`
+
 ## Usage
 
 ### Retrieving A User's Current Sessions
