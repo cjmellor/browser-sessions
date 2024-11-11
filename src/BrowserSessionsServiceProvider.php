@@ -17,7 +17,7 @@ class BrowserSessionsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             abstract: 'browser-sessions',
-            concrete: fn () => new BrowserSessions()
+            concrete: fn () => new BrowserSessions
         );
     }
 }
