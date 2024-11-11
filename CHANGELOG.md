@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.2.0 - 2024-11-11
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 1.6.0 to 2.0.0 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/10
+* Bump aglipanci/laravel-pint-action from 2.3.1 to 2.4 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/11
+* Bump dependabot/fetch-metadata from 2.0.0 to 2.1.0 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/13
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/15
+* Configurable option for returning session ID by @harrisonratcliffe in https://github.com/cjmellor/browser-sessions/pull/17
+
+### New Contributors
+
+* @harrisonratcliffe made their first contribution in https://github.com/cjmellor/browser-sessions/pull/17
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.1.0...v1.2.0
+
 ## v1.1.0 - 2024-03-24
 
 ### What's Changed
