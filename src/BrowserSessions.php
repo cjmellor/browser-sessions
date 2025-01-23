@@ -65,7 +65,7 @@ class BrowserSessions
             ]);
         }
 
-        Auth::guard()->logoutOtherDevices($password);
+        Auth::guard(config(key: 'browser-sessions.browser_session_guard'))->logoutOtherDevices($password);
 
         $this->deleteOtherSessionRecords();
     }
