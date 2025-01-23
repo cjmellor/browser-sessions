@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.3.0 - 2025-01-23
+
+### What's Changed
+
+* logoutOtherDevices error when calling from a API issues fix by @irabbi360 in https://github.com/cjmellor/browser-sessions/pull/21
+
+### New Contributors
+
+* @irabbi360 made their first contribution in https://github.com/cjmellor/browser-sessions/pull/21
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.2.1...v1.3.0
+
 ## v1.2.1 - 2025-01-23
 
 ### What's Changed
