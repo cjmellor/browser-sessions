@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.1 - 2025-01-23
+
+### What's Changed
+
+* add session_id to object example by @harrisonratcliffe in https://github.com/cjmellor/browser-sessions/pull/18
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.2.0...v1.2.1
+
 ## v1.2.0 - 2024-11-11
 
 ### What's Changed
