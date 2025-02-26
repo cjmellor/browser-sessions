@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.3.1 - 2025-02-26
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/22
+* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/23
+* Laravel 12.x Compatibility by @laravel-shift in https://github.com/cjmellor/browser-sessions/pull/24
+
+### New Contributors
+
+* @laravel-shift made their first contribution in https://github.com/cjmellor/browser-sessions/pull/24
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.3.0...v1.3.1
+
 ## v1.3.0 - 2025-01-23
 
 ### What's Changed
