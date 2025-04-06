@@ -39,7 +39,7 @@ class BrowserSessions
                 'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
             ];
 
-            if (config('browser-sessions-enhanced.include_session_id')) {
+            if (config('browser-sessions.include_session_id')) {
                 $sessionInfo = array_merge(['session_id' => $session->id], $sessionInfo);
             }
 
