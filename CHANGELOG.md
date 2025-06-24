@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.3.2 - 2025-06-24
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/26
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/cjmellor/browser-sessions/pull/27
+* Update BrowserSessions.php by @ataufik135 in https://github.com/cjmellor/browser-sessions/pull/28
+
+### New Contributors
+
+* @ataufik135 made their first contribution in https://github.com/cjmellor/browser-sessions/pull/28
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.3.1...v1.3.2
+
 ## v1.3.1 - 2025-02-26
 
 ### What's Changed
