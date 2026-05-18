@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.0.0 - 2026-05-18
+
+### What's Changed
+
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/cjmellor/browser-sessions/pull/29
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/cjmellor/browser-sessions/pull/31
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/cjmellor/browser-sessions/pull/33
+* Bump dependabot/fetch-metadata from 2.5.0 to 3.0.0 by @dependabot[bot] in https://github.com/cjmellor/browser-sessions/pull/35
+* Bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 by @dependabot[bot] in https://github.com/cjmellor/browser-sessions/pull/36
+* feat: add Laravel 13 support and drop EOL Laravel 10/11 by @cjmellor in https://github.com/cjmellor/browser-sessions/pull/38
+
+**Full Changelog**: https://github.com/cjmellor/browser-sessions/compare/v1.3.2...v2.0.0
+
 ## v1.3.2 - 2025-06-24
 
 ### What's Changed
