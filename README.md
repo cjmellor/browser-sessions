@@ -1,7 +1,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cjmellor/browser-sessions?color=rgb%2856%20189%20248%29&label=release&style=for-the-badge)](https://packagist.org/packages/cjmellor/browser-sessions)
 [![Total Downloads](https://img.shields.io/packagist/dt/cjmellor/browser-sessions.svg?color=rgb%28249%20115%2022%29&style=for-the-badge)](https://packagist.org/packages/cjmellor/browser-sessions)
 ![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/cjmellor/browser-sessions/php?color=rgb%28165%20180%20252%29&logo=php&logoColor=rgb%28165%20180%20252%29&style=for-the-badge)
-![Laravel Version](https://img.shields.io/badge/laravel-^10-rgb(235%2068%2050)?style=for-the-badge&logo=laravel)
+![Laravel Version](https://img.shields.io/badge/laravel-^12|^13-rgb(235%2068%2050)?style=for-the-badge&logo=laravel)
 
 > [!WARNING]
 >
